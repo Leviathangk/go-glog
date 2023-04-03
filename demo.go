@@ -33,7 +33,7 @@ func main() {
 		}
 	})
 
-	// 正常使用
+	// 正常使用：默认 logger 可以直接使用 glog.Debugln()
 	logger.Traceln("xx")
 	logger.Debugln("xx")
 	logger.Infoln("xx")
