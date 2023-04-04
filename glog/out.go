@@ -11,6 +11,13 @@ import (
 func out(logger *Logger, level int, prefix1, prefix2, str string) {
 	var err error
 
+	// 检查是否是 panic error 保证退出
+	defer func() {
+		if level == PanicLevel {
+			panic(prefix2 + str)
+		}
+	}()
+
 	// 执行输出
 	for _, o := range logger.Config.Out {
 		if o == os.Stdout {
@@ -32,11 +39,6 @@ func out(logger *Logger, level int, prefix1, prefix2, str string) {
 	// 执行 hook
 	for _, hookFunc := range logger.Hook {
 		hookFunc(level, prefix2+str)
-	}
-
-	// panic error
-	if level == PanicLevel {
-		panic(prefix2 + str)
 	}
 }
 

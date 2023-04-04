@@ -13,9 +13,6 @@ func main() {
 	//	Formatter:  glog.DefaultConfig,
 	//})
 
-	//glog.Fatalln("Fatalln 结束程序执行")
-	//glog.Panicln("Panic 结束程序执行")
-
 	// 默认 logger
 	logger := glog.DefaultLogger
 	logger.Config.PrintLevel = glog.TraceLevel // 默认是 debug 级别，这里修改
@@ -37,9 +34,11 @@ func main() {
 	})
 
 	// 正常使用：默认 logger 可以直接使用 glog.Debugln()
-	logger.Traceln("xx")
-	logger.Debugln("xx")
-	logger.Infoln("xx")
-	logger.Warningln("xx")
-	logger.Errorln("xx")
+	logger.Traceln("Trace")
+	logger.Debugln("Debug")
+	logger.Infoln("Info")
+	logger.Warningln("Warning")
+	logger.Errorln("Error")
+	//logger.Fatalln("Fatalln 结束程序执行")
+	//logger.Panicln("Panic 结束程序执行")
 }
