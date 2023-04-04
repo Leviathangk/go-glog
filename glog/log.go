@@ -1,6 +1,8 @@
 // Package glog 日志级别的输出
 package glog
 
+import "os"
+
 // logger 直接调用的方法
 
 func (logger *Logger) Trace(a ...any) {
@@ -63,6 +65,39 @@ func (logger *Logger) Errorf(format string, a ...any) {
 	outPutf(logger, ErrorLevel, format, a...)
 }
 
+func (logger *Logger) Fatal(a ...any) {
+	defer func() {
+		os.Exit(1)
+	}()
+	outPut(logger, FatalLevel, a...)
+}
+
+func (logger *Logger) Fatalln(a ...any) {
+	defer func() {
+		os.Exit(1)
+	}()
+	outPutln(logger, FatalLevel, a...)
+}
+
+func (logger *Logger) Fatalf(format string, a ...any) {
+	defer func() {
+		os.Exit(1)
+	}()
+	outPutf(logger, FatalLevel, format, a...)
+}
+
+func (logger *Logger) Panic(a ...any) {
+	outPut(logger, PanicLevel, a...)
+}
+
+func (logger *Logger) Panicln(a ...any) {
+	outPutln(logger, PanicLevel, a...)
+}
+
+func (logger *Logger) Panicf(format string, a ...any) {
+	outPutf(logger, PanicLevel, format, a...)
+}
+
 // 为了默认 logger 方便调用
 
 func Trace(a ...any) {
@@ -123,4 +158,37 @@ func Errorln(a ...any) {
 
 func Errorf(format string, a ...any) {
 	outPutf(DefaultLogger, ErrorLevel, format, a...)
+}
+
+func Fatal(a ...any) {
+	defer func() {
+		os.Exit(1)
+	}()
+	outPut(DefaultLogger, FatalLevel, a...)
+}
+
+func Fatalln(a ...any) {
+	defer func() {
+		os.Exit(1)
+	}()
+	outPutln(DefaultLogger, FatalLevel, a...)
+}
+
+func Fatalf(format string, a ...any) {
+	defer func() {
+		os.Exit(1)
+	}()
+	outPutf(DefaultLogger, FatalLevel, format, a...)
+}
+
+func Panic(a ...any) {
+	outPut(DefaultLogger, PanicLevel, a...)
+}
+
+func Panicln(a ...any) {
+	outPutln(DefaultLogger, PanicLevel, a...)
+}
+
+func Panicf(format string, a ...any) {
+	outPutf(DefaultLogger, PanicLevel, format, a...)
 }

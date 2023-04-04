@@ -40,6 +40,12 @@ func New(config *Config) (logger *Logger) {
 	if config.Formatter.ErrorColor == nil {
 		config.Formatter.ErrorColor = DefaultErrorColor
 	}
+	if config.Formatter.FatalColor == nil {
+		config.Formatter.FatalColor = DefaultFatalColor
+	}
+	if config.Formatter.PanicColor == nil {
+		config.Formatter.PanicColor = DefaultPanicColor
+	}
 	logger.Config = config
 
 	return
@@ -87,7 +93,17 @@ func prefix(logger *Logger, level int, timeNow string, color bool) string {
 			levelStr = "Error" + "  "
 		}
 	case FatalLevel:
-		levelStr = "Fatal"
+		if color {
+			levelStr = logger.Config.Formatter.FatalColor.format("Fatal") + "  "
+		} else {
+			levelStr = "Fatal" + "  "
+		}
+	case PanicLevel:
+		if color {
+			levelStr = logger.Config.Formatter.PanicColor.format("Panic") + "  "
+		} else {
+			levelStr = "Panic" + "  "
+		}
 	default:
 		if color {
 			levelStr = logger.Config.Formatter.InfoColor.format("Unknow") + " "

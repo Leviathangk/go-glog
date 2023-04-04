@@ -28,7 +28,8 @@ func main() {
     logger.Infoln("xx")
     logger.Warningln("xx")
     logger.Errorln("xx")
-    
+    logger.Fatalln("xx")
+    logger.Panicln("xx")
 }
 ```
 

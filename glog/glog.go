@@ -10,6 +10,7 @@ const (
 	WarningLevel
 	ErrorLevel
 	FatalLevel
+	PanicLevel
 )
 
 // Config 配置

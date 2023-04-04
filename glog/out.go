@@ -11,31 +11,32 @@ import (
 func out(logger *Logger, level int, prefix1, prefix2, str string) {
 	var err error
 
+	// 执行输出
 	for _, o := range logger.Config.Out {
 		if o == os.Stdout {
 			_, err = o.Write([]byte(prefix1))
-			if err != nil {
-				fmt.Printf("日志输出错误：%s", err)
-				return
+			if err == nil {
+				_, err = o.Write([]byte(str))
 			}
-			_, err = o.Write([]byte(str))
 		} else {
 			_, err = o.Write([]byte(prefix2))
-			if err != nil {
-				fmt.Printf("日志输出错误：%s", err)
-				return
+			if err == nil {
+				_, err = o.Write([]byte(str))
 			}
-			_, err = o.Write([]byte(str))
 		}
 		if err != nil {
 			fmt.Printf("日志输出错误：%s", err)
-			return
 		}
 	}
 
 	// 执行 hook
 	for _, hookFunc := range logger.Hook {
 		hookFunc(level, prefix2+str)
+	}
+
+	// panic error
+	if level == PanicLevel {
+		panic(prefix2 + str)
 	}
 }
 

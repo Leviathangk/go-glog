@@ -19,6 +19,8 @@ type Formatter struct {
 	InfoColor    *ColorFormatter // Info 级别显示格式
 	WarningColor *ColorFormatter // Warning 级别显示格式
 	ErrorColor   *ColorFormatter // Error 级别显示格式
+	FatalColor   *ColorFormatter // Fatal 级别显示格式
+	PanicColor   *ColorFormatter // Panic 级别显示格式
 }
 
 // format 根据定义好的颜色，进行格式化

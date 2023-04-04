@@ -25,6 +25,8 @@ var DefaultFormatter = &Formatter{
 	InfoColor:    DefaultInfoColor,
 	WarningColor: DefaultWarningColor,
 	ErrorColor:   DefaultErrorColor,
+	FatalColor:   DefaultFatalColor,
+	PanicColor:   DefaultPanicColor,
 }
 
 // DefaultTimeColor 时间默认显示的颜色
@@ -66,5 +68,19 @@ var DefaultWarningColor = &ColorFormatter{
 var DefaultErrorColor = &ColorFormatter{
 	Model:           1,    // 显示模式
 	ForegroundColor: "31", // 前景色
+	BackgroundColor: "",   // 背景色
+}
+
+// DefaultFatalColor Fatal 级别默认显示的颜色
+var DefaultFatalColor = &ColorFormatter{
+	Model:           1,    // 显示模式
+	ForegroundColor: "36", // 前景色
+	BackgroundColor: "",   // 背景色
+}
+
+// DefaultPanicColor Panic 级别默认显示的颜色
+var DefaultPanicColor = &ColorFormatter{
+	Model:           1,    // 显示模式
+	ForegroundColor: "35", // 前景色
 	BackgroundColor: "",   // 背景色
 }
