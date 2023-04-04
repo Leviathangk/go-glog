@@ -6,7 +6,7 @@
 # 安装
 
 ```
-go get github.com/Leviathangk/go-glog@latest
+go get -u github.com/Leviathangk/go-glog@latest
 ```
 
 # 使用
