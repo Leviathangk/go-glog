@@ -7,11 +7,11 @@ import (
 
 func main() {
 	// 创建新 logger
-	//logger := glog.New(&glog.Config{
+	//logger := glog.NewLogger(&glog.Config{
 	//	Print:   true,
 	//	PrintLevel: glog.DebugLevel,
 	//	OutPutLevel: glog.DebugLevel,
-	//	Formatter:  glog.DefaultConfig,
+	//	Formatter:  glog.DefaultConfig.Formatter,
 	//})
 
 	// 默认 logger

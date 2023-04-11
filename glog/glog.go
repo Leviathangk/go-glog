@@ -40,4 +40,4 @@ type CallerDetail struct {
 }
 
 // DefaultLogger 默认记录器
-var DefaultLogger = New(DefaultConfig)
+var DefaultLogger = NewLogger(DefaultConfig)

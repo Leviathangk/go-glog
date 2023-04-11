@@ -7,8 +7,8 @@ import (
 	"runtime"
 )
 
-// New 创建记录器
-func New(config *Config) (logger *Logger) {
+// NewLogger 创建记录器
+func NewLogger(config *Config) (logger *Logger) {
 	logger = new(Logger)
 
 	// 对配置进行判断
