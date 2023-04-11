@@ -8,8 +8,9 @@ import (
 func main() {
 	// 创建新 logger
 	//logger := glog.New(&glog.Config{
-	//	UsePrint:   true,
+	//	Print:   true,
 	//	PrintLevel: glog.DebugLevel,
+	//	OutPutLevel: glog.DebugLevel,
 	//	Formatter:  glog.DefaultConfig,
 	//})
 
