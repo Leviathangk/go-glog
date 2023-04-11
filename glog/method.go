@@ -3,7 +3,6 @@ package glog
 
 import (
 	"fmt"
-	"os"
 	"path"
 	"runtime"
 )
@@ -13,9 +12,6 @@ func New(config *Config) (logger *Logger) {
 	logger = new(Logger)
 
 	// 对配置进行判断
-	if len(config.Out) == 0 {
-		config.Out = append(config.Out, os.Stdout)
-	}
 	if config.Formatter == nil {
 		config.Formatter = DefaultConfig.Formatter
 	}

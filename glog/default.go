@@ -3,17 +3,15 @@ package glog
 
 import (
 	"io"
-	"os"
 )
 
 // DefaultConfig 默认配置
 var DefaultConfig = &Config{
-	Save:       false,
-	SaveLevel:  DebugLevel,
-	Print:      true,
-	PrintLevel: DebugLevel,
-	Formatter:  DefaultFormatter,
-	Out:        []io.Writer{os.Stdout},
+	Print:       true,
+	PrintLevel:  DebugLevel,
+	Out:         []io.Writer{},
+	OutPutLevel: DebugLevel,
+	Formatter:   DefaultFormatter,
 }
 
 // DefaultFormatter 默认 Formatter

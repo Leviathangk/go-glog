@@ -8,8 +8,13 @@ import (
 )
 
 // out 输出
-func out(logger *Logger, level int, prefix1, prefix2, str string) {
+func out(logger *Logger, level int, str string) {
 	var err error
+
+	// 形成前缀的格式化字符
+	timeNow := time.Now().Format(logger.Config.Formatter.TimeFormat)
+	prefix1 := prefix(logger, level, timeNow, true)
+	prefix2 := prefix(logger, level, timeNow, false)
 
 	// 检查是否是 panic error 保证退出
 	defer func() {
@@ -18,25 +23,33 @@ func out(logger *Logger, level int, prefix1, prefix2, str string) {
 		}
 	}()
 
-	// 执行输出
+	// 控制台输出
+	if logger.Config.Print && logger.Config.PrintLevel <= level {
+		_, err = os.Stdout.Write([]byte(prefix1))
+		if err == nil {
+			_, err = os.Stdout.Write([]byte(str))
+		}
+
+		if err != nil {
+			fmt.Printf("日志输出错误：%s\n", err)
+		}
+	}
+
+	// AddOutPut 进来的
 	for _, o := range logger.Config.Out {
-		if o == os.Stdout {
-			_, err = o.Write([]byte(prefix1))
-			if err == nil {
-				_, err = o.Write([]byte(str))
-			}
-		} else {
+		if logger.Config.OutPutLevel <= level {
 			_, err = o.Write([]byte(prefix2))
 			if err == nil {
 				_, err = o.Write([]byte(str))
 			}
 		}
+
 		if err != nil {
-			fmt.Printf("日志输出错误：%s", err)
+			fmt.Printf("日志输出错误：%s\n", err)
 		}
 	}
 
-	// 执行 hook
+	// AddHook 进来的
 	for _, hookFunc := range logger.Hook {
 		hookFunc(level, prefix2+str)
 	}
@@ -44,48 +57,15 @@ func out(logger *Logger, level int, prefix1, prefix2, str string) {
 
 // outPut 格式化
 func outPut(logger *Logger, level int, a ...any) {
-	var outStr string
-	var prefix1 string
-	var prefix2 string
-	timeNow := time.Now().Format(logger.Config.Formatter.TimeFormat)
-
-	if DefaultLogger.Config.Print && DefaultLogger.Config.PrintLevel <= level {
-		outStr = fmt.Sprint(a...)
-		prefix1 = prefix(logger, level, timeNow, true)
-		prefix2 = prefix(logger, level, timeNow, false)
-	}
-
-	out(logger, level, prefix1, prefix2, outStr)
+	out(logger, level, fmt.Sprint(a...))
 }
 
 // outPutln 格式化
 func outPutln(logger *Logger, level int, a ...any) {
-	var outStr string
-	var prefix1 string
-	var prefix2 string
-	timeNow := time.Now().Format(logger.Config.Formatter.TimeFormat)
-
-	if DefaultLogger.Config.Print && DefaultLogger.Config.PrintLevel <= level {
-		outStr = fmt.Sprintln(a...)
-		prefix1 = prefix(logger, level, timeNow, true)
-		prefix2 = prefix(logger, level, timeNow, false)
-	}
-
-	out(logger, level, prefix1, prefix2, outStr)
+	out(logger, level, fmt.Sprintln(a...))
 }
 
 // outPutf 格式化
 func outPutf(logger *Logger, level int, format string, a ...any) {
-	var outStr string
-	var prefix1 string
-	var prefix2 string
-	timeNow := time.Now().Format(logger.Config.Formatter.TimeFormat)
-
-	if DefaultLogger.Config.Print && DefaultLogger.Config.PrintLevel <= level {
-		outStr = fmt.Sprintf(format, a...)
-		prefix1 = prefix(logger, level, timeNow, true)
-		prefix2 = prefix(logger, level, timeNow, false)
-	}
-
-	out(logger, level, prefix1, prefix2, outStr)
+	out(logger, level, fmt.Sprintf(format, a...))
 }
