@@ -26,6 +26,6 @@ func (logger *Logger) AddOutPut(writer ...io.Writer) {
 }
 
 // AddHook 添加钩子函数
-func (logger *Logger) AddHook(hookFunc HookFunc) {
-	logger.Hook = append(logger.Hook, hookFunc)
+func (logger *Logger) AddHook(hookFunc ...HookFunc) {
+	logger.Hook = append(logger.Hook, hookFunc...)
 }
