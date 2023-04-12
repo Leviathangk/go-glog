@@ -1,15 +1,10 @@
 // Package glog 控制台输出学习链接：https://zhuanlan.zhihu.com/p/76751728
 package glog
 
-import (
-	"io"
-)
-
 // DefaultConfig 默认配置
 var DefaultConfig = &Config{
 	Print:       true,
 	PrintLevel:  DebugLevel,
-	Out:         []io.Writer{},
 	OutPutLevel: DebugLevel,
 	Formatter:   DefaultFormatter,
 }

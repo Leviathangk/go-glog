@@ -36,7 +36,7 @@ func out(logger *Logger, level int, str string) {
 	}
 
 	// AddOutPut 进来的
-	for _, o := range logger.Config.Out {
+	for _, o := range logger.Out {
 		if logger.Config.OutPutLevel <= level {
 			_, err = o.Write([]byte(prefix2))
 			if err == nil {

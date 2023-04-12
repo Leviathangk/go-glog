@@ -15,11 +15,10 @@ const (
 
 // Config 配置
 type Config struct {
-	Print       bool        // 是否进行打印：默认配置是是
-	PrintLevel  int         // 打印级别：默认配置是 DebugLevel
-	Out         []io.Writer // 输出日志的地方：可以用来自动保存日志
-	OutPutLevel int         // AddOutPut 的级别：默认是 DebugLevel
-	Formatter   *Formatter  // 输出格式化
+	Print       bool       // 是否进行打印：默认配置是是
+	PrintLevel  int        // 打印级别：默认配置是 DebugLevel
+	OutPutLevel int        // AddOutPut 的级别：默认是 DebugLevel
+	Formatter   *Formatter // 输出格式化
 }
 
 // HookFunc 钩子函数
@@ -27,7 +26,8 @@ type HookFunc func(level int, out string)
 
 // Logger 记录器，代表一个
 type Logger struct {
-	Hook   []HookFunc // hook 方法
+	Out    []io.Writer // 输出日志的地方：可以用来自动保存日志
+	Hook   []HookFunc  // hook 方法
 	Config *Config
 }
 
