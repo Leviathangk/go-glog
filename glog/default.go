@@ -51,7 +51,7 @@ var DefaultDebugColor = &ColorFormatter{
 // DefaultInfoColor Info 级别默认显示的颜色
 var DefaultInfoColor = &ColorFormatter{
 	Model:           1,    // 显示模式
-	ForegroundColor: "30", // 前景色
+	ForegroundColor: "36", // 前景色
 	BackgroundColor: "",   // 背景色
 }
 

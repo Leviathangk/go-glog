@@ -19,7 +19,7 @@ func main() {
 	logger.Config.PrintLevel = glog.TraceLevel  // 默认是 debug 级别，这里修改
 	logger.Config.OutPutLevel = glog.TraceLevel // 默认是 debug 级别，这里修改
 
-	// AddOutPut
+	//// AddOutPut
 	file, _ := os.OpenFile("demo.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
 	logger.AddOutPut(file)
 
