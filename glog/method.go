@@ -109,7 +109,7 @@ func prefix(logger *Logger, level int, timeNow string, color bool) string {
 	}
 
 	// 构造出
-	callerDetail := GetCallerDetail(4)
+	callerDetail := GetCallerDetail(5)
 
 	// 构造输出前缀字符
 	outStr := fmt.Sprintf("%s | %s | %s:%d - ", levelStr, timeNow, callerDetail.Name, callerDetail.Line)
