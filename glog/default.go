@@ -1,6 +1,9 @@
 // Package glog 控制台输出学习链接：https://zhuanlan.zhihu.com/p/76751728
 package glog
 
+// DefaultLogger 默认记录器
+var DefaultLogger = NewLogger(DefaultConfig)
+
 // DefaultConfig 默认配置
 var DefaultConfig = &Config{
 	Print:       true,
@@ -67,7 +70,7 @@ var DefaultErrorColor = &ColorFormatter{
 // DefaultFatalColor Fatal 级别默认显示的颜色
 var DefaultFatalColor = &ColorFormatter{
 	Model:           1,    // 显示模式
-	ForegroundColor: "36", // 前景色
+	ForegroundColor: "30", // 前景色
 	BackgroundColor: "",   // 背景色
 }
 

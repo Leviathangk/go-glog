@@ -4,9 +4,8 @@
 主要是简化使用
 
 效果图：颜色可自定义  
-![img.png](img.png)
 # 安装
-
+![img.png](img.png)
 ```
 go get -u github.com/Leviathangk/go-glog@latest
 ```

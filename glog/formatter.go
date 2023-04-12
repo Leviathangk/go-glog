@@ -42,3 +42,73 @@ func (c *ColorFormatter) format(s string) string {
 
 	return fmt.Sprintf("\033[%d%s%sm%s\033[0m", c.Model, foregroundColor, backgroundStr, s)
 }
+
+// prefix 输出格式化的前缀
+func prefix(logger *Logger, level int, timeNow string, color bool) string {
+	// 格式化时间戳
+	if color {
+		timeNow = logger.Config.Formatter.TimeColor.format(timeNow)
+	}
+
+	// 格式化日志级别
+	var levelStr string
+
+	switch level {
+	case TraceLevel:
+		if color {
+			levelStr = logger.Config.Formatter.TraceColor.format("Trace")
+		} else {
+			levelStr = "Trace"
+		}
+	case DebugLevel:
+		if color {
+			levelStr = logger.Config.Formatter.DebugColor.format("Debug")
+		} else {
+			levelStr = "Debug"
+		}
+	case InfoLevel:
+		if color {
+			levelStr = logger.Config.Formatter.InfoColor.format("Info") + " "
+		} else {
+			levelStr = "Info" + " "
+		}
+	case WarningLevel:
+		if color {
+			levelStr = logger.Config.Formatter.WarningColor.format("Warn") + " "
+		} else {
+			levelStr = "Warn" + " "
+		}
+	case ErrorLevel:
+		if color {
+			levelStr = logger.Config.Formatter.ErrorColor.format("Error")
+		} else {
+			levelStr = "Error"
+		}
+	case FatalLevel:
+		if color {
+			levelStr = logger.Config.Formatter.FatalColor.format("Fatal")
+		} else {
+			levelStr = "Fatal"
+		}
+	case PanicLevel:
+		if color {
+			levelStr = logger.Config.Formatter.PanicColor.format("Panic")
+		} else {
+			levelStr = "Panic"
+		}
+	default:
+		if color {
+			levelStr = logger.Config.Formatter.InfoColor.format("Unknow")
+		} else {
+			levelStr = "Unknow"
+		}
+	}
+
+	// 构造出
+	callerDetail := GetCallerDetail(5)
+
+	// 构造输出前缀字符
+	outStr := fmt.Sprintf("%s | %s | %s:%d - ", levelStr, timeNow, callerDetail.Name, callerDetail.Line)
+
+	return outStr
+}

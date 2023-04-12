@@ -1,6 +1,10 @@
 package glog
 
-import "io"
+import (
+	"io"
+	"path"
+	"runtime"
+)
 
 // 日志级别
 const (
@@ -39,5 +43,57 @@ type CallerDetail struct {
 	FileName string // 调用文件名
 }
 
-// DefaultLogger 默认记录器
-var DefaultLogger = NewLogger(DefaultConfig)
+// NewLogger 创建记录器
+func NewLogger(config *Config) (logger *Logger) {
+	logger = new(Logger)
+
+	// 对配置进行判断
+	if config.Formatter == nil {
+		config.Formatter = DefaultConfig.Formatter
+	}
+	if config.Formatter.TimeFormat == "" {
+		config.Formatter.TimeFormat = DefaultConfig.Formatter.TimeFormat
+	}
+	if config.Formatter.TimeColor == nil {
+		config.Formatter.TimeColor = DefaultTimeColor
+	}
+	if config.Formatter.TraceColor == nil {
+		config.Formatter.TraceColor = DefaultTraceColor
+	}
+	if config.Formatter.DebugColor == nil {
+		config.Formatter.DebugColor = DefaultDebugColor
+	}
+	if config.Formatter.InfoColor == nil {
+		config.Formatter.InfoColor = DefaultInfoColor
+	}
+	if config.Formatter.WarningColor == nil {
+		config.Formatter.WarningColor = DefaultWarningColor
+	}
+	if config.Formatter.ErrorColor == nil {
+		config.Formatter.ErrorColor = DefaultErrorColor
+	}
+	if config.Formatter.FatalColor == nil {
+		config.Formatter.FatalColor = DefaultFatalColor
+	}
+	if config.Formatter.PanicColor == nil {
+		config.Formatter.PanicColor = DefaultPanicColor
+	}
+	logger.Config = config
+
+	return
+}
+
+// GetCallerDetail 获取调用者的信息
+func GetCallerDetail(deep int) (callerDetail *CallerDetail) {
+	callerDetail = new(CallerDetail)
+
+	pc, file, line, ok := runtime.Caller(deep) // 返回调用堆栈、文件、调用行号，这里的 deep 是堆栈深度
+	if ok {
+		callerDetail.Name = runtime.FuncForPC(pc).Name()
+		callerDetail.Line = line
+		callerDetail.FilePath = file
+		callerDetail.FileName = path.Base(file)
+	}
+
+	return
+}
