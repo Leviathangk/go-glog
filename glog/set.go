@@ -10,19 +10,7 @@ func (logger *Logger) SetTimeFormat(format string) {
 
 // AddOutPut 增加输出：必须实现 Writer 接口
 func (logger *Logger) AddOutPut(writer ...io.Writer) {
-	for _, w := range writer {
-		exists := false
-		for _, o := range logger.Config.Out {
-			if o == w {
-				exists = true
-				break
-			}
-		}
-
-		if !exists {
-			logger.Config.Out = append(logger.Config.Out, w)
-		}
-	}
+	logger.Config.Out = append(logger.Config.Out, writer...)
 }
 
 // AddHook 添加钩子函数
