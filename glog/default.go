@@ -14,15 +14,15 @@ var DefaultConfig = &Config{
 
 // DefaultFormatter 默认 Formatter
 var DefaultFormatter = &Formatter{
-	TimeFormat:   "2006-01-02 15:04:05",
-	TimeColor:    DefaultTimeColor,
-	TraceColor:   DefaultTraceColor,
-	DebugColor:   DefaultDebugColor,
-	InfoColor:    DefaultInfoColor,
-	WarningColor: DefaultWarningColor,
-	ErrorColor:   DefaultErrorColor,
-	FatalColor:   DefaultFatalColor,
-	PanicColor:   DefaultPanicColor,
+	TimeFormat: "2006-01-02 15:04:05",
+	TimeColor:  DefaultTimeColor,
+	TraceColor: DefaultTraceColor,
+	DebugColor: DefaultDebugColor,
+	InfoColor:  DefaultInfoColor,
+	WarnColor:  DefaultWarnColor,
+	ErrorColor: DefaultErrorColor,
+	FatalColor: DefaultFatalColor,
+	PanicColor: DefaultPanicColor,
 }
 
 // DefaultTimeColor 时间默认显示的颜色
@@ -53,8 +53,8 @@ var DefaultInfoColor = &ColorFormatter{
 	BackgroundColor: "",   // 背景色
 }
 
-// DefaultWarningColor Warning 级别默认显示的颜色
-var DefaultWarningColor = &ColorFormatter{
+// DefaultWarnColor Warn 级别默认显示的颜色
+var DefaultWarnColor = &ColorFormatter{
 	Model:           1,    // 显示模式
 	ForegroundColor: "33", // 前景色
 	BackgroundColor: "",   // 背景色

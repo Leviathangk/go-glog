@@ -11,7 +11,7 @@ const (
 	TraceLevel = iota
 	DebugLevel
 	InfoLevel
-	WarningLevel
+	WarnLevel
 	ErrorLevel
 	FatalLevel
 	PanicLevel
@@ -66,8 +66,8 @@ func NewLogger(config *Config) (logger *Logger) {
 	if config.Formatter.InfoColor == nil {
 		config.Formatter.InfoColor = DefaultInfoColor
 	}
-	if config.Formatter.WarningColor == nil {
-		config.Formatter.WarningColor = DefaultWarningColor
+	if config.Formatter.WarnColor == nil {
+		config.Formatter.WarnColor = DefaultWarnColor
 	}
 	if config.Formatter.ErrorColor == nil {
 		config.Formatter.ErrorColor = DefaultErrorColor

@@ -39,7 +39,7 @@ func main() {
 	logger.Traceln("Trace")
 	logger.Debugln("Debug")
 	logger.Infoln("Info")
-	logger.Warningln("Warning")
+	logger.Warnln("Warn")
 	logger.Errorln("Error")
 	//logger.Fatalln("Fatalln 结束程序执行")
 	//logger.Panicln("Panic 结束程序执行")

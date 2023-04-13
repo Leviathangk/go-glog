@@ -38,7 +38,7 @@ func main() {
     logger.Traceln("xx")
     logger.Debugln("xx")
     logger.Infoln("xx")
-    logger.Warningln("xx")
+    logger.Warnln("xx")
     logger.Errorln("xx")
     logger.Fatalln("xx")
     logger.Panicln("xx")

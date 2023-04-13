@@ -41,16 +41,16 @@ func (logger *Logger) Infof(format string, a ...any) {
 	outPutf(logger, InfoLevel, format, a...)
 }
 
-func (logger *Logger) Warning(a ...any) {
-	outPut(logger, WarningLevel, a...)
+func (logger *Logger) Warn(a ...any) {
+	outPut(logger, WarnLevel, a...)
 }
 
-func (logger *Logger) Warningln(a ...any) {
-	outPutln(logger, WarningLevel, a...)
+func (logger *Logger) Warnln(a ...any) {
+	outPutln(logger, WarnLevel, a...)
 }
 
-func (logger *Logger) Warningf(format string, a ...any) {
-	outPutf(logger, WarningLevel, format, a...)
+func (logger *Logger) Warnf(format string, a ...any) {
+	outPutf(logger, WarnLevel, format, a...)
 }
 
 func (logger *Logger) Error(a ...any) {
@@ -136,16 +136,16 @@ func Infof(format string, a ...any) {
 	outPutf(DefaultLogger, InfoLevel, format, a...)
 }
 
-func Warning(a ...any) {
-	outPut(DefaultLogger, WarningLevel, a...)
+func Warn(a ...any) {
+	outPut(DefaultLogger, WarnLevel, a...)
 }
 
-func Warningln(a ...any) {
-	outPutln(DefaultLogger, WarningLevel, a...)
+func Warnln(a ...any) {
+	outPutln(DefaultLogger, WarnLevel, a...)
 }
 
-func Warningf(format string, a ...any) {
-	outPutf(DefaultLogger, WarningLevel, format, a...)
+func Warnf(format string, a ...any) {
+	outPutf(DefaultLogger, WarnLevel, format, a...)
 }
 
 func Error(a ...any) {

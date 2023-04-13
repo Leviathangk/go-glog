@@ -12,15 +12,15 @@ type ColorFormatter struct {
 
 // Formatter 输出格式化
 type Formatter struct {
-	TimeFormat   string          // 时间格式
-	TimeColor    *ColorFormatter // 时间显示格式
-	TraceColor   *ColorFormatter // Trace 级别显示格式
-	DebugColor   *ColorFormatter // Debug 级别显示格式
-	InfoColor    *ColorFormatter // Info 级别显示格式
-	WarningColor *ColorFormatter // Warning 级别显示格式
-	ErrorColor   *ColorFormatter // Error 级别显示格式
-	FatalColor   *ColorFormatter // Fatal 级别显示格式
-	PanicColor   *ColorFormatter // Panic 级别显示格式
+	TimeFormat string          // 时间格式
+	TimeColor  *ColorFormatter // 时间显示格式
+	TraceColor *ColorFormatter // Trace 级别显示格式
+	DebugColor *ColorFormatter // Debug 级别显示格式
+	InfoColor  *ColorFormatter // Info 级别显示格式
+	WarnColor  *ColorFormatter // Warn 级别显示格式
+	ErrorColor *ColorFormatter // Error 级别显示格式
+	FatalColor *ColorFormatter // Fatal 级别显示格式
+	PanicColor *ColorFormatter // Panic 级别显示格式
 }
 
 // format 根据定义好的颜色，进行格式化
@@ -72,9 +72,9 @@ func prefix(logger *Logger, level int, timeNow string, color bool) string {
 		} else {
 			levelStr = "Info" + " "
 		}
-	case WarningLevel:
+	case WarnLevel:
 		if color {
-			levelStr = logger.Config.Formatter.WarningColor.format("Warn") + " "
+			levelStr = logger.Config.Formatter.WarnColor.format("Warn") + " "
 		} else {
 			levelStr = "Warn" + " "
 		}
