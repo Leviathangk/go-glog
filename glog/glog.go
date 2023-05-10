@@ -22,6 +22,7 @@ type Config struct {
 	Print       bool       // 是否进行打印：默认配置是是
 	PrintLevel  int        // 打印级别：默认配置是 DebugLevel
 	OutPutLevel int        // AddOutPut 的级别：默认是 DebugLevel
+	ShowCaller  bool       // 打印调用者、调用行号：默认是 true
 	Formatter   *Formatter // 输出格式化
 }
 

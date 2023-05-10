@@ -52,6 +52,7 @@ func prefix(logger *Logger, level int, timeNow string, color bool) string {
 
 	// 格式化日志级别
 	var levelStr string
+	var outStr string
 
 	switch level {
 	case TraceLevel:
@@ -104,11 +105,18 @@ func prefix(logger *Logger, level int, timeNow string, color bool) string {
 		}
 	}
 
-	// 构造出
-	callerDetail := GetCallerDetail(5)
+	if logger.Config.ShowCaller {
+		// 构造出
+		callerDetail := GetCallerDetail(5)
 
-	// 构造输出前缀字符
-	outStr := fmt.Sprintf("%s | %s | %s:%d - ", levelStr, timeNow, callerDetail.Name, callerDetail.Line)
+		// 构造输出前缀字符
+		outStr = fmt.Sprintf("%s | %s | %s:%d - ", levelStr, timeNow, callerDetail.Name, callerDetail.Line)
+
+	} else {
+		// 构造输出前缀字符
+		outStr = fmt.Sprintf("%s | %s - ", levelStr, timeNow)
+
+	}
 
 	return outStr
 }

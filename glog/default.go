@@ -9,6 +9,7 @@ var DefaultConfig = &Config{
 	Print:       true,
 	PrintLevel:  DebugLevel,
 	OutPutLevel: DebugLevel,
+	ShowCaller:  true,
 	Formatter:   DefaultFormatter,
 }
 
