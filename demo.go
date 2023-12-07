@@ -8,8 +8,9 @@ import (
 func main() {
 	// 获取 Logger
 	//logger := glog.NewLogger()	// 创建新的 logger
-	logger := glog.DLogger   // 使用默认的 logger
-	logger.ShowColor = false // 禁用控制台显示颜色
+	logger := glog.DLogger    // 使用默认的 logger
+	logger.ShowColor = false  // 禁用控制台显示颜色
+	logger.ShowCaller = false // 不显示堆栈信息
 
 	// 修改日志级别
 	logger.PrintLevel = glog.LevelTrace   // 日志输出级别（控制台）
