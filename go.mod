@@ -1,3 +1,3 @@
-module github.com/Leviathangk/go-glog
+module glog
 
-go 1.18
+go 1.20

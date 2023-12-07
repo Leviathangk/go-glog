@@ -2,99 +2,60 @@ package glog
 
 import (
 	"io"
-	"path"
-	"runtime"
 )
 
 // 日志级别
 const (
-	TraceLevel = iota
-	DebugLevel
-	InfoLevel
-	WarnLevel
-	ErrorLevel
-	FatalLevel
-	PanicLevel
+	LevelTrace = iota
+	LevelDebug
+	LevelInfo
+	LevelWarn
+	LevelError
+	LevelFatal
+	LevelPanic
 )
 
-// Config 配置
-type Config struct {
-	Print       bool       // 是否进行打印：默认配置是是
-	PrintLevel  int        // 打印级别：默认配置是 DebugLevel
-	OutPutLevel int        // AddOutPut 的级别：默认是 DebugLevel
-	ShowCaller  bool       // 打印调用者、调用行号：默认是 true
-	Formatter   *Formatter // 输出格式化
+// Logger 结构体
+type Logger struct {
+	ShowColor    bool        // 是否在输出的时候输出颜色（仅控制台）
+	ShowCaller   bool        // 显示调用栈
+	Print        bool        // 是否输出到控制台
+	PrintLevel   int         // 日志限制输出级别（仅控制台）
+	Handler      []io.Writer // 其它输出方式，受 OutPutLevel 限制
+	HandlerLevel int         // 日志限制输出级别（其余输出）
+	Hook         []HookFunc  // 钩子函数
+	TimeFormat   string      // 时间格式化
+}
+
+// DLogger 默认的 logger
+var DLogger = NewLogger()
+
+// NewLogger 新建一个 logger
+func NewLogger() *Logger {
+	return &Logger{
+		ShowColor:    true,
+		ShowCaller:   true,
+		Print:        true,
+		PrintLevel:   LevelTrace,
+		HandlerLevel: LevelTrace,
+		TimeFormat:   "2006-01-02 15:04:05",
+	}
+}
+
+// SetTimeFormat 设置时间格式化的格式
+func (logger *Logger) SetTimeFormat(format string) {
+	logger.TimeFormat = format
+}
+
+// AddHandler 增加输出：必须实现 Writer 接口
+func (logger *Logger) AddHandler(writer ...io.Writer) {
+	logger.Handler = append(logger.Handler, writer...)
 }
 
 // HookFunc 钩子函数
 type HookFunc func(level int, out string)
 
-// Logger 记录器，代表一个
-type Logger struct {
-	Out    []io.Writer // 输出日志的地方：可以用来自动保存日志
-	Hook   []HookFunc  // hook 方法
-	Config *Config
-}
-
-// CallerDetail 调用者信息
-type CallerDetail struct {
-	Name     string // 调用者
-	Line     int    // 调用行号
-	FilePath string // 调用文件
-	FileName string // 调用文件名
-}
-
-// NewLogger 创建记录器
-func NewLogger(config *Config) (logger *Logger) {
-	logger = new(Logger)
-
-	// 对配置进行判断
-	if config.Formatter == nil {
-		config.Formatter = DefaultConfig.Formatter
-	}
-	if config.Formatter.TimeFormat == "" {
-		config.Formatter.TimeFormat = DefaultConfig.Formatter.TimeFormat
-	}
-	if config.Formatter.TimeColor == nil {
-		config.Formatter.TimeColor = DefaultTimeColor
-	}
-	if config.Formatter.TraceColor == nil {
-		config.Formatter.TraceColor = DefaultTraceColor
-	}
-	if config.Formatter.DebugColor == nil {
-		config.Formatter.DebugColor = DefaultDebugColor
-	}
-	if config.Formatter.InfoColor == nil {
-		config.Formatter.InfoColor = DefaultInfoColor
-	}
-	if config.Formatter.WarnColor == nil {
-		config.Formatter.WarnColor = DefaultWarnColor
-	}
-	if config.Formatter.ErrorColor == nil {
-		config.Formatter.ErrorColor = DefaultErrorColor
-	}
-	if config.Formatter.FatalColor == nil {
-		config.Formatter.FatalColor = DefaultFatalColor
-	}
-	if config.Formatter.PanicColor == nil {
-		config.Formatter.PanicColor = DefaultPanicColor
-	}
-	logger.Config = config
-
-	return
-}
-
-// GetCallerDetail 获取调用者的信息
-func GetCallerDetail(deep int) (callerDetail *CallerDetail) {
-	callerDetail = new(CallerDetail)
-
-	pc, file, line, ok := runtime.Caller(deep) // 返回调用堆栈、文件、调用行号，这里的 deep 是堆栈深度
-	if ok {
-		callerDetail.Name = runtime.FuncForPC(pc).Name()
-		callerDetail.Line = line
-		callerDetail.FilePath = file
-		callerDetail.FileName = path.Base(file)
-	}
-
-	return
+// AddHook 添加钩子函数
+func (logger *Logger) AddHook(hookFunc ...HookFunc) {
+	logger.Hook = append(logger.Hook, hookFunc...)
 }

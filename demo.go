@@ -1,33 +1,29 @@
 package main
 
 import (
-	"github.com/Leviathangk/go-glog/glog"
+	"glog/glog"
 	"os"
 )
 
 func main() {
-	// 创建新 logger
-	//logger := glog.NewLogger(&glog.Config{
-	//	Print:   true,
-	//	PrintLevel: glog.DebugLevel,
-	//	OutPutLevel: glog.DebugLevel,
-	//	Formatter:  glog.DefaultConfig.Formatter,
-	//})
+	// 获取 Logger
+	//logger := glog.NewLogger()	// 创建新的 logger
+	logger := glog.DLogger   // 使用默认的 logger
+	logger.ShowColor = false // 禁用控制台显示颜色
 
-	// 默认 logger
-	logger := glog.DefaultLogger
-	logger.Config.PrintLevel = glog.TraceLevel  // 默认是 debug 级别，这里修改
-	logger.Config.OutPutLevel = glog.TraceLevel // 默认是 debug 级别，这里修改
+	// 修改日志级别
+	logger.PrintLevel = glog.LevelTrace   // 日志输出级别（控制台）
+	logger.HandlerLevel = glog.LevelTrace // 日志输出级别（handler）
 
-	// AddOutPut
+	// 添加 handler
 	file, _ := os.OpenFile("demo.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
-	logger.AddOutPut(file)
+	logger.AddHandler(file)
 
-	// AddHook：实现分类处理
+	// 添加 hook 函数：示例保存错误日志（hook 是为了更自由的控制，当然可以直接使用 handler 统一控制）
 	errFile, _ := os.OpenFile("err.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
 
 	logger.AddHook(func(level int, out string) {
-		if level == glog.ErrorLevel {
+		if level >= glog.LevelError {
 			_, err := errFile.Write([]byte(out))
 			if err != nil {
 				return
@@ -35,12 +31,11 @@ func main() {
 		}
 	})
 
-	// 正常使用：默认 logger 可以直接使用 glog.Debugln()
+	// 正常的日志输出
 	logger.Traceln("Trace")
 	logger.Debugln("Debug")
 	logger.Infoln("Info")
 	logger.Warnln("Warn")
 	logger.Errorln("Error")
-	//logger.Fatalln("Fatalln 结束程序执行")
-	//logger.Panicln("Panic 结束程序执行")
+	logger.Fatalln("Fatal")
 }

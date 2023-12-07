@@ -1,194 +1,269 @@
 // Package glog 日志级别的输出
 package glog
 
-import "os"
+import (
+	"fmt"
+	"os"
+	"path"
+	"runtime"
+	"time"
+)
+
+// CallerDetail 调用者信息
+type CallerDetail struct {
+	Name     string // 调用者
+	Line     int    // 调用行号
+	FilePath string // 调用文件
+	FileName string // 调用文件名
+}
+
+// GetCallerDetail 获取调用者的信息
+func GetCallerDetail(deep int) (callerDetail *CallerDetail) {
+	callerDetail = new(CallerDetail)
+
+	pc, file, line, ok := runtime.Caller(deep) // 返回调用堆栈、文件、调用行号，这里的 deep 是堆栈深度
+	if ok {
+		callerDetail.Name = runtime.FuncForPC(pc).Name()
+		callerDetail.Line = line
+		callerDetail.FilePath = file
+		callerDetail.FileName = path.Base(file)
+	}
+
+	return
+}
+
+// prefix 输出格式化的前缀
+func prefix(logger *Logger, level int, timeNow string, color bool) string {
+	// 格式化日志级别
+	var levelStr string
+	var outStr string
+
+	switch level {
+	case LevelTrace:
+		if color {
+			levelStr = ColorTrace.format("Trace")
+		} else {
+			levelStr = "Trace"
+		}
+	case LevelDebug:
+		if color {
+			levelStr = ColorDebug.format("Debug")
+		} else {
+			levelStr = "Debug"
+		}
+	case LevelInfo:
+		if color {
+			levelStr = ColorInfo.format("Info") + " "
+		} else {
+			levelStr = "Info" + " "
+		}
+	case LevelWarn:
+		if color {
+			levelStr = ColorWarn.format("Warn") + " "
+		} else {
+			levelStr = "Warn" + " "
+		}
+	case LevelError:
+		if color {
+			levelStr = ColorError.format("Error")
+		} else {
+			levelStr = "Error"
+		}
+	case LevelFatal:
+		if color {
+			levelStr = ColorFatal.format("Fatal")
+		} else {
+			levelStr = "Fatal"
+		}
+	case LevelPanic:
+		if color {
+			levelStr = ColorPanic.format("Panic")
+		} else {
+			levelStr = "Panic"
+		}
+	default:
+		if color {
+			levelStr = ColorInfo.format("Unknow")
+		} else {
+			levelStr = "Unknow"
+		}
+	}
+
+	// 格式化时间戳
+	if color {
+		timeNow = ColorTime.format(timeNow)
+	}
+
+	if logger.ShowCaller {
+		// 构造出
+		callerDetail := GetCallerDetail(5)
+
+		// 构造输出前缀字符
+		outStr = fmt.Sprintf("%s | %s | %s:%d - ", levelStr, timeNow, callerDetail.Name, callerDetail.Line)
+
+	} else {
+		// 构造输出前缀字符
+		outStr = fmt.Sprintf("%s | %s - ", levelStr, timeNow)
+
+	}
+
+	return outStr
+}
+
+// out 输出
+func out(logger *Logger, level int, str string) {
+	var err error
+	var prefixColor string
+
+	// 形成前缀的格式化字符
+	timeNow := time.Now().Format(logger.TimeFormat)
+	prefixDefault := prefix(logger, level, timeNow, false)
+
+	if logger.ShowColor && logger.Print {
+		prefixColor = prefix(logger, level, timeNow, true)
+	} else {
+		prefixColor = prefixDefault
+	}
+
+	// AddHook 进来的
+	for _, hookFunc := range logger.Hook {
+		hookFunc(level, prefixDefault+str)
+	}
+
+	// 控制台输出
+	if logger.Print && logger.PrintLevel <= level {
+		_, err = os.Stdout.Write([]byte(prefixColor + str))
+
+		if err != nil {
+			fmt.Printf("日志输出错误：%s\n", err)
+		}
+	}
+
+	// AddOutPut 进来的
+	for _, o := range logger.Handler {
+		if logger.HandlerLevel <= level {
+			_, err = o.Write([]byte(prefixDefault + str))
+
+			if err != nil {
+				fmt.Printf("日志输出错误：%s\n", err)
+			}
+		}
+	}
+
+	// 检查是否是 panic error 保证退出
+	defer func() {
+		if level == LevelPanic {
+			panic(prefixDefault + str)
+		}
+	}()
+}
+
+// outPut 格式化
+func outPut(logger *Logger, level int, a ...any) {
+	out(logger, level, fmt.Sprint(a...))
+}
+
+// outPutln 格式化
+func outPutln(logger *Logger, level int, a ...any) {
+	out(logger, level, fmt.Sprintln(a...))
+}
+
+// outPutf 格式化
+func outPutf(logger *Logger, level int, format string, a ...any) {
+	out(logger, level, fmt.Sprintf(format, a...))
+}
 
 // logger 直接调用的方法
 
 func (logger *Logger) Trace(a ...any) {
-	outPut(logger, TraceLevel, a...)
+	outPut(logger, LevelTrace, a...)
 }
 
 func (logger *Logger) Traceln(a ...any) {
-	outPutln(logger, TraceLevel, a...)
+	outPutln(logger, LevelTrace, a...)
 }
 
 func (logger *Logger) Tracef(format string, a ...any) {
-	outPutf(logger, TraceLevel, format, a...)
+	outPutf(logger, LevelTrace, format, a...)
 }
 
 func (logger *Logger) Debug(a ...any) {
-	outPut(logger, DebugLevel, a...)
+	outPut(logger, LevelDebug, a...)
 }
 
 func (logger *Logger) Debugln(a ...any) {
-	outPutln(logger, DebugLevel, a...)
+	outPutln(logger, LevelDebug, a...)
 }
 
 func (logger *Logger) Debugf(format string, a ...any) {
-	outPutf(logger, DebugLevel, format, a...)
+	outPutf(logger, LevelDebug, format, a...)
 }
 
 func (logger *Logger) Info(a ...any) {
-	outPut(logger, InfoLevel, a...)
+	outPut(logger, LevelInfo, a...)
 }
 
 func (logger *Logger) Infoln(a ...any) {
-	outPutln(logger, InfoLevel, a...)
+	outPutln(logger, LevelInfo, a...)
 }
 
 func (logger *Logger) Infof(format string, a ...any) {
-	outPutf(logger, InfoLevel, format, a...)
+	outPutf(logger, LevelInfo, format, a...)
 }
 
 func (logger *Logger) Warn(a ...any) {
-	outPut(logger, WarnLevel, a...)
+	outPut(logger, LevelWarn, a...)
 }
 
 func (logger *Logger) Warnln(a ...any) {
-	outPutln(logger, WarnLevel, a...)
+	outPutln(logger, LevelWarn, a...)
 }
 
 func (logger *Logger) Warnf(format string, a ...any) {
-	outPutf(logger, WarnLevel, format, a...)
+	outPutf(logger, LevelWarn, format, a...)
 }
 
 func (logger *Logger) Error(a ...any) {
-	outPut(logger, ErrorLevel, a...)
+	outPut(logger, LevelError, a...)
 }
 
 func (logger *Logger) Errorln(a ...any) {
-	outPutln(logger, ErrorLevel, a...)
+	outPutln(logger, LevelError, a...)
 }
 
 func (logger *Logger) Errorf(format string, a ...any) {
-	outPutf(logger, ErrorLevel, format, a...)
+	outPutf(logger, LevelError, format, a...)
 }
 
 func (logger *Logger) Fatal(a ...any) {
 	defer func() {
 		os.Exit(1)
 	}()
-	outPut(logger, FatalLevel, a...)
+	outPut(logger, LevelFatal, a...)
 }
 
 func (logger *Logger) Fatalln(a ...any) {
 	defer func() {
 		os.Exit(1)
 	}()
-	outPutln(logger, FatalLevel, a...)
+	outPutln(logger, LevelFatal, a...)
 }
 
 func (logger *Logger) Fatalf(format string, a ...any) {
 	defer func() {
 		os.Exit(1)
 	}()
-	outPutf(logger, FatalLevel, format, a...)
+	outPutf(logger, LevelFatal, format, a...)
 }
 
 func (logger *Logger) Panic(a ...any) {
-	outPut(logger, PanicLevel, a...)
+	outPut(logger, LevelPanic, a...)
 }
 
 func (logger *Logger) Panicln(a ...any) {
-	outPutln(logger, PanicLevel, a...)
+	outPutln(logger, LevelPanic, a...)
 }
 
 func (logger *Logger) Panicf(format string, a ...any) {
-	outPutf(logger, PanicLevel, format, a...)
-}
-
-// 为了默认 logger 方便调用
-
-func Trace(a ...any) {
-	outPut(DefaultLogger, TraceLevel, a...)
-}
-
-func Traceln(a ...any) {
-	outPutln(DefaultLogger, TraceLevel, a...)
-}
-
-func Tracef(format string, a ...any) {
-	outPutf(DefaultLogger, TraceLevel, format, a...)
-}
-
-func Debug(a ...any) {
-	outPut(DefaultLogger, DebugLevel, a...)
-}
-
-func Debugln(a ...any) {
-	outPutln(DefaultLogger, DebugLevel, a...)
-}
-
-func Debugf(format string, a ...any) {
-	outPutf(DefaultLogger, DebugLevel, format, a...)
-}
-
-func Info(a ...any) {
-	outPut(DefaultLogger, InfoLevel, a...)
-}
-
-func Infoln(a ...any) {
-	outPutln(DefaultLogger, InfoLevel, a...)
-}
-
-func Infof(format string, a ...any) {
-	outPutf(DefaultLogger, InfoLevel, format, a...)
-}
-
-func Warn(a ...any) {
-	outPut(DefaultLogger, WarnLevel, a...)
-}
-
-func Warnln(a ...any) {
-	outPutln(DefaultLogger, WarnLevel, a...)
-}
-
-func Warnf(format string, a ...any) {
-	outPutf(DefaultLogger, WarnLevel, format, a...)
-}
-
-func Error(a ...any) {
-	outPut(DefaultLogger, ErrorLevel, a...)
-}
-
-func Errorln(a ...any) {
-	outPutln(DefaultLogger, ErrorLevel, a...)
-}
-
-func Errorf(format string, a ...any) {
-	outPutf(DefaultLogger, ErrorLevel, format, a...)
-}
-
-func Fatal(a ...any) {
-	defer func() {
-		os.Exit(1)
-	}()
-	outPut(DefaultLogger, FatalLevel, a...)
-}
-
-func Fatalln(a ...any) {
-	defer func() {
-		os.Exit(1)
-	}()
-	outPutln(DefaultLogger, FatalLevel, a...)
-}
-
-func Fatalf(format string, a ...any) {
-	defer func() {
-		os.Exit(1)
-	}()
-	outPutf(DefaultLogger, FatalLevel, format, a...)
-}
-
-func Panic(a ...any) {
-	outPut(DefaultLogger, PanicLevel, a...)
-}
-
-func Panicln(a ...any) {
-	outPutln(DefaultLogger, PanicLevel, a...)
-}
-
-func Panicf(format string, a ...any) {
-	outPutf(DefaultLogger, PanicLevel, format, a...)
+	outPutf(logger, LevelPanic, format, a...)
 }
