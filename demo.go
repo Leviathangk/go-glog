@@ -1,7 +1,7 @@
 package main
 
 import (
-	"glog/glog"
+	"github.com/Leviathangk/go-glog/glog"
 	"os"
 )
 
